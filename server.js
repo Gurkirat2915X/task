@@ -48,6 +48,8 @@ const steps = [
   },
 ];
 
+
+
 // Route for the homepage
 app.get("/", (req, res) => {
   res.render("index", { steps: steps });
