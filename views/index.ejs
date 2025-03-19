@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Infographic</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/html-to-image@1.11.11/dist/html-to-image.min.js"></script>
+  </head>
+  <body class="bg-blue-50 font-sans">
+    <div class="max-w-3xl mx-auto py-10 bg-blue-50" id="infographic">
+      <h1 class="text-3xl font-bold text-teal-700 text-center mb-8">
+        Harnessing Infographics for Effective Pinterest Marketing
+      </h1>
+      <div class="relative">
+        <div
+          class="absolute top-0 left-1/2 w-1 bg-teal-600 h-full transform -translate-x-1/2"
+        ></div>
+        <% steps.forEach(step => { %> <% if(step.number%2==0){ %>
+        <div class="mb-8 flex items-start">
+          <div class="w-1/2 pr-4 text-right">
+            <h2 class="text-xl font-semibold text-teal-700">
+              <%= step.title %>
+            </h2>
+            <p class="text-gray-700"><%= step.description %></p>
+          </div>
+          <div class="w-1/2 pl-4 flex items-center">
+            <div
+              class="text-6xl font-bold text-teal-800 bg-teal-200 px-4 py-2 rounded-lg"
+            >
+              <%= step.number %>
+            </div>
+          </div>
+        </div>
+        <% } else { %>
+        <div class="mb-8 flex items-start">
+          <div class="w-1/2 pr-4 flex justify-end items-center">
+            <div
+              class="text-6xl font-bold text-teal-800 bg-teal-200 px-4 py-2 rounded-lg"
+            >
+              <%= step.number %>
+            </div>
+          </div>
+          <div class="w-1/2 pl-4">
+            <h2 class="text-xl font-semibold text-teal-700">
+              <%= step.title %>
+            </h2>
+            <p class="text-gray-700"><%= step.description %></p>
+          </div>
+        </div>
+        <% } %> <% }) %>
+      </div>
+    </div>
+    <div class="text-center mb-8">
+      <button
+        onclick="downloadInfographic()"
+        class="bg-teal-700 text-white px-4 py-2 rounded hover:bg-teal-800"
+      >
+        Download Infographic
+      </button>
+    </div>
+
+    <script>
+      function downloadInfographic() {
+        const targetDiv = document.getElementById("infographic");
+
+        const timeline = targetDiv.querySelector(".relative div.absolute");
+        if (timeline) {
+          // Force recalculation of the timeline height
+          setTimeout(() => {
+            const parentHeight = timeline.parentElement.offsetHeight;
+            timeline.style.height = parentHeight + "px";
+
+            setTimeout(() => {
+              htmlToImage
+                .toPng(targetDiv, {
+                  quality: 1.0,
+                  pixelRatio: 2,
+                  cacheBust: true,
+                  style: {
+                    visibility: "visible",
+
+                    backgroundColor: "#EFF6FF",
+                  },
+                })
+                .then(function (dataUrl) {
+                  const link = document.createElement("a");
+                  link.download = "pinterest-infographic.png";
+                  link.href = dataUrl;
+                  link.click();
+                })
+                .catch(function (error) {
+                  console.error("Error capturing infographic:", error);
+
+                  html2canvas(targetDiv, {
+                    useCORS: true,
+                    scale: 2,
+                    backgroundColor: "#EFF6FF",
+                  }).then((canvas) => {
+                    const dataUrl = canvas.toDataURL("image/png");
+                    const link = document.createElement("a");
+                    link.download = "pinterest-infographic.png";
+                    link.href = dataUrl;
+                    link.click();
+                  });
+                });
+            }, 300);
+          }, 100);
+        } else {
+          htmlToImage
+            .toPng(targetDiv, {
+              quality: 1.0,
+              pixelRatio: 2,
+            })
+            .then(function (dataUrl) {
+              const link = document.createElement("a");
+              link.download = "pinterest-infographic.png";
+              link.href = dataUrl;
+              link.click();
+            })
+            .catch(function (error) {
+              console.error("Error with html-to-image:", error);
+            });
+        }
+      }
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  </body>
+</html>
